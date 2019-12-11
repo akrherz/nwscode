@@ -1,0 +1,623 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+  
+  <HEAD><META CONTENT="text/html; charset=utf-8" HTTP-EQUIV="Content-Type">
+    <TITLE>nwscode.pydatetime.date -- Concrete date type.</TITLE>
+    <LINK HREF="layout.css" TYPE="text/css" REL="stylesheet">
+    
+  </HEAD>
+  <BODY>
+    <DIV ID="page">
+      
+    <DIV ID="top-nav">
+        <H1 ID="doc-title">
+        <A HREF="index.html" REL="index">nwscode</A></H1>
+        <DIV CLASS="online-navigation">
+          <A HREF="index.html" REL="index">index</A>
+          <SPAN ID="nav-docs">
+            
+          </SPAN>
+          
+          
+          <BR>
+          
+          
+          
+          <A HREF="module-nwscode.html" TITLE="nwscode reference">
+            nwscode
+          </A>
+          
+            
+            <A HREF="class-nwscode.pydatetime.date.html">details</A>
+            
+            <A HREF="class-nwscode.pydatetime.date-index.html">
+              tree
+            </A>
+            
+          
+        </DIV>
+    </DIV>
+    
+    <DIV ID="main-content">
+  
+  <H1 CLASS="pudge-member-page-heading">
+    <TT>date</TT>
+  </H1>
+  <H4 CLASS="pudge-member-page-subheading">
+    Concrete date type.
+  </H4>
+  <P CLASS="pudge-member-parent-link">
+    <SMALL>
+    The date class is accessible via the
+    <A HREF="module-nwscode.pydatetime.html">
+      <TT>nwscode.pydatetime</TT>
+    </A> module.
+    </SMALL>
+  </P>
+  <DIV ID="pudge-section-nav">
+  <UL>
+    <LI>
+      <A HREF="#attributes" CLASS="pudge-section-link">
+        Attributes (7)
+      </A>
+      
+    </LI>
+      
+    <LI>
+      <A HREF="#methods" CLASS="pudge-section-link">
+        Methods (22)
+      </A>
+      
+    </LI>
+    
+    <LI>
+      <A HREF="nwscode/pydatetime.py.html?f=700&amp;l=984#700" CLASS="pudge-section-link">
+        Source
+      </A>
+    </LI>
+  </UL>
+  </DIV>
+  <DIV STYLE="clear: left">
+  </DIV>
+  <DIV CLASS="rst pudge-module-doc">
+    <P>Constructors:</P>
+<P>__new__()
+fromtimestamp()
+today()
+fromordinal()</P>
+<P>Operators:</P>
+<P>__repr__, __str__
+__cmp__, __hash__
+__add__, __radd__, __sub__ (add/radd only with timedelta arg)</P>
+<P>Methods:</P>
+<P>timetuple()
+toordinal()
+weekday()
+isoweekday(), isocalendar(), isoformat()
+ctime()
+strftime()</P>
+<P>Properties (readonly):
+year, month, day</P>
+  </DIV>
+  
+  <HR>
+  
+  
+  
+  
+    <A NAME="attributes">
+  
+  
+    </A>
+    <H2>Attributes</H2>
+    <DIV CLASS="pudge-member name">
+    <A NAME="year">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">a</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#year" CLASS="pudge-obj-link">year</A></TT></H4>
+    <DIV CLASS="pudge-section rst">
+      <P>year (1-9999)</P>
+      
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member name">
+    <A NAME="min">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">a</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#min" CLASS="pudge-obj-link">min</A></TT></H4>
+    <DIV CLASS="pudge-section rst">
+      
+      <PRE>datetime.date(1, 1, 1)</PRE>
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member name">
+    <A NAME="__safe_for_unpickling__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">a</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#__safe_for_unpickling__" CLASS="pudge-obj-link">__safe_for_unpickling__</A></TT></H4>
+    <DIV CLASS="pudge-section rst">
+      
+      <PRE>True</PRE>
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member name">
+    <A NAME="month">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">a</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#month" CLASS="pudge-obj-link">month</A></TT></H4>
+    <DIV CLASS="pudge-section rst">
+      <P>month (1-12)</P>
+      
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member name">
+    <A NAME="max">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">a</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#max" CLASS="pudge-obj-link">max</A></TT></H4>
+    <DIV CLASS="pudge-section rst">
+      
+      <PRE>datetime.date(9999, 12, 31)</PRE>
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member name">
+    <A NAME="day">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">a</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#day" CLASS="pudge-obj-link">day</A></TT></H4>
+    <DIV CLASS="pudge-section rst">
+      <P>day (1-31)</P>
+      
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member name">
+    <A NAME="resolution">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">a</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#resolution" CLASS="pudge-obj-link">resolution</A></TT></H4>
+    <DIV CLASS="pudge-section rst">
+      
+      <PRE>datetime.timedelta(1)</PRE>
+    </DIV>
+  </DIV>
+    
+  
+    <A NAME="methods">
+    
+  
+    </A>
+    <H2>Methods</H2>
+    <DIV CLASS="pudge-member routine alias">
+    <A NAME="__init__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#__init__" CLASS="pudge-obj-link">__init__</A>(...)</TT>
+      <A HREF="__builtin__.py.html" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      x.__init__(...) initializes x; see x.__class__.__doc__ for signature
+    </P>
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="fromtimestamp">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#fromtimestamp" CLASS="pudge-obj-link">fromtimestamp</A>(cls, t)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=750&amp;l=754#750" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      Construct a date from a POSIX timestamp (like time.time()).
+    </P>
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="today">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#today" CLASS="pudge-obj-link">today</A>(cls)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=756&amp;l=760#756" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      Construct a date from time.time().
+    </P>
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="fromordinal">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#fromordinal" CLASS="pudge-obj-link">fromordinal</A>(cls, n)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=762&amp;l=770#762" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      Contruct a date from a proleptic Gregorian ordinal.
+    </P>
+    <P>January 1 of year 1 is day 1.  Only the year, month and day are
+non-zero in the result.</P>
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="ctime">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#ctime" CLASS="pudge-obj-link">ctime</A>(self)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=785&amp;l=788#785" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      Format a la ctime().
+    </P>
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="strftime">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#strftime" CLASS="pudge-obj-link">strftime</A>(self, fmt)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=789&amp;l=792#789" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      Format using strftime().
+    </P>
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="isoformat">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#isoformat" CLASS="pudge-obj-link">isoformat</A>(self)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=793&amp;l=803#793" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      Return the date formatted according to ISO.
+    </P>
+    <P>This is 'YYYY-MM-DD'.</P>
+<P>References:
+- <A HREF="http://www.w3.org/TR/NOTE-datetime" CLASS="reference">http://www.w3.org/TR/NOTE-datetime</A>
+- <A HREF="http://www.cl.cam.ac.uk/~mgk25/iso-time.html" CLASS="reference">http://www.cl.cam.ac.uk/~mgk25/iso-time.html</A></P>
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="timetuple">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#timetuple" CLASS="pudge-obj-link">timetuple</A>(self)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=814&amp;l=818#814" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      Return local time tuple compatible with time.localtime().
+    </P>
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="toordinal">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#toordinal" CLASS="pudge-obj-link">toordinal</A>(self)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=819&amp;l=826#819" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      Return proleptic Gregorian ordinal for the year, month and day.
+    </P>
+    <P>January 1 of year 1 is day 1.  Only the year, month and day values
+contribute to the result.</P>
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="replace">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#replace" CLASS="pudge-obj-link">replace</A>(self, year=None, month=None, day=None)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=827&amp;l=837#827" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      Return a new date with new values for the specified fields.
+    </P>
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__eq__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#__eq__" CLASS="pudge-obj-link">__eq__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=840&amp;l=847#840" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__ne__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#__ne__" CLASS="pudge-obj-link">__ne__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=848&amp;l=855#848" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__le__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#__le__" CLASS="pudge-obj-link">__le__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=856&amp;l=863#856" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__lt__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#__lt__" CLASS="pudge-obj-link">__lt__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=864&amp;l=871#864" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__ge__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#__ge__" CLASS="pudge-obj-link">__ge__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=872&amp;l=879#872" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__gt__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#__gt__" CLASS="pudge-obj-link">__gt__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=880&amp;l=887#880" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__add__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#__add__" CLASS="pudge-obj-link">__add__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=905&amp;l=915#905" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      Add a date to a timedelta.
+    </P>
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__radd__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#__radd__" CLASS="pudge-obj-link">__radd__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=905&amp;l=915#905" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      Add a date to a timedelta.
+    </P>
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__sub__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#__sub__" CLASS="pudge-obj-link">__sub__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=919&amp;l=928#919" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      Subtract two dates, or a date and a timedelta.
+    </P>
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="weekday">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#weekday" CLASS="pudge-obj-link">weekday</A>(self)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=929&amp;l=932#929" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      Return day of the week, where Monday == 0 ... Sunday == 6.
+    </P>
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="isoweekday">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#isoweekday" CLASS="pudge-obj-link">isoweekday</A>(self)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=935&amp;l=939#935" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      Return day of the week, where Monday == 1 ... Sunday == 7.
+    </P>
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="isocalendar">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.date.html#isocalendar" CLASS="pudge-obj-link">isocalendar</A>(self)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=940&amp;l=966#940" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      Return a 3-tuple containing ISO year, week number, and weekday.
+    </P>
+    <P>The first ISO week of the year is the (Mon-Sun) week
+containing the year's first Thursday; everything else derives
+from that.</P>
+<P>The first week is 1; Monday is 1 ... Sunday is 7.</P>
+<P>ISO calendar algorithm taken from
+<A HREF="http://www.phys.uu.nl/~vgent/calendar/isocalendar.htm" CLASS="reference">http://www.phys.uu.nl/~vgent/calendar/isocalendar.htm</A></P>
+  
+    </DIV>
+  </DIV>
+    
+  
+  
+  <P>
+    <SMALL>
+    
+    
+    See 
+    <A HREF="nwscode/pydatetime.py.html?f=700&amp;l=984#700" TITLE="nwscode/pydatetime.py:700">the source</A>
+    for more information.
+    </SMALL>
+  </P>
+</DIV>
+    
+    <DIV ID="footer">
+      
+      <P ID="pudge">
+        Built with
+        <A HREF="http://lesscode.org/projects/pudge/">
+          Pudge/0.1.1</A>
+      </P>
+      
+    </DIV>
+    </DIV>
+  </BODY>
+</HTML>

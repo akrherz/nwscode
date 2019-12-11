@@ -1,0 +1,214 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+  
+  <HEAD><META CONTENT="text/html; charset=utf-8" HTTP-EQUIV="Content-Type">
+    <TITLE>nwscode.awipsid -- A parser for the &lt;em>AWIPS Identifier&lt;/em>.</TITLE>
+    <LINK HREF="layout.css" TYPE="text/css" REL="stylesheet">
+    
+  </HEAD>
+  <BODY>
+    <DIV ID="page">
+      
+    <DIV ID="top-nav">
+        <H1 ID="doc-title">
+        <A HREF="index.html" REL="index">nwscode</A></H1>
+        <DIV CLASS="online-navigation">
+          <A HREF="index.html" REL="index">index</A>
+          <SPAN ID="nav-docs">
+            
+          </SPAN>
+          
+          
+          <BR>
+          
+          
+          
+          <A HREF="module-nwscode.html" TITLE="nwscode reference">
+            nwscode
+          </A>
+          
+            
+            <A HREF="module-nwscode.awipsid.html">details</A>
+            
+            <A HREF="module-nwscode.awipsid-index.html">
+              tree
+            </A>
+            
+          
+        </DIV>
+    </DIV>
+    
+    <DIV ID="main-content">
+  
+  <H1 CLASS="pudge-member-page-heading">
+    <TT>awipsid</TT>
+  </H1>
+  <H4 CLASS="pudge-member-page-subheading">
+    A parser for the <EM>AWIPS Identifier</EM>.
+  </H4>
+  <P CLASS="pudge-member-parent-link">
+    <SMALL>
+    The awipsid module is accessible via the
+    <A HREF="module-nwscode.html">
+      <TT>nwscode</TT>
+    </A> module.
+    </SMALL>
+  </P>
+  <DIV ID="pudge-section-nav">
+  <UL>
+    <LI>
+      
+      <SPAN CLASS="pudge-missing-section-link">
+        Attributes
+      </SPAN>
+    </LI>
+    <LI>
+      
+      <SPAN CLASS="pudge-missing-section-link">
+        Functions
+      </SPAN>
+    </LI>
+    <LI>
+      <A HREF="#classes" CLASS="pudge-section-link">
+        Classes (2)
+      </A>
+      
+    </LI>
+      
+    <LI>
+      
+      <SPAN CLASS="pudge-missing-section-link">
+        Modules
+      </SPAN>
+    </LI>
+    <LI>
+      <A HREF="module-nwscode.awipsid-index.html" CLASS="pudge-section-link">
+        Index
+      </A>
+    </LI>
+    <LI>
+      <A HREF="nwscode/awipsid.py.html" CLASS="pudge-section-link">
+        Source
+      </A>
+    </LI>
+  </UL>
+  </DIV>
+  <DIV STYLE="clear: left">
+  </DIV>
+  <DIV CLASS="rst pudge-module-doc">
+    <P>Created by Alexander Ross on 2006-08-01.
+Copyright (c) 2006 NOAA's National Weather Service. All rights reserved.</P>
+  </DIV>
+  
+  <HR>
+  
+  
+  
+  
+    <A NAME="classes">
+  
+  
+    </A>
+    <H2>Classes</H2>
+    <DIV CLASS="pudge-member class ">
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">C</SPAN>
+      <TT>
+        <A HREF="class-nwscode.awipsid.AwipsIdError.html" CLASS="pudge-obj-link">AwipsIdError</A>(...)</TT>
+      <A HREF="nwscode/awipsid.py.html?f=20&amp;l=22#20" CLASS="pudge-member-view-source" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+      
+      <P CLASS="note">
+        This class contains <A HREF="class-nwscode.awipsid.AwipsIdError.html#members">
+          2 members</A>.
+      </P>
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member class ">
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">C</SPAN>
+      <TT>
+        <A HREF="class-nwscode.awipsid.AwipsId.html" CLASS="pudge-obj-link">AwipsId</A>(...)</TT>
+      <A HREF="nwscode/awipsid.py.html?f=23&amp;l=486#23" CLASS="pudge-member-view-source" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      A parser for the <EM>AWIPS Identifier</EM>.
+    </P>
+    <P>Initialize this object with a AWIPS Identifier string. For a full
+description of the AWIPS Identifier see:</P>
+<BLOCKQUOTE>
+<A HREF="http://www.weather.gov/tg/awips.html" CLASS="reference">http://www.weather.gov/tg/awips.html</A></BLOCKQUOTE>
+<P>Attributes:</P>
+<BLOCKQUOTE>
+<DL CLASS="docutils">
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">raw</SPAN></TT></DT>
+<DD>The raw AWIPS Identifier string.</DD>
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">category</SPAN></TT></DT>
+<DD>The product category.</DD>
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">designator</SPAN></TT></DT>
+<DD>The product designator.</DD>
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">code</SPAN></TT></DT>
+<DD>This attribute exposes the the individual unprocessed
+code groups.  Use this attribute to access portions of the
+AWIPS Identifier string.</DD>
+</DL>
+</BLOCKQUOTE>
+<P>Usage Example:</P>
+<PRE CLASS="doctest-block">
+>>> from nwscode.awipsid import AwipsId
+>>> a = AwipsId("ZFPAFG")
+>>> assert a.raw == "ZFPAFG"
+>>> assert a.category == "ZONE FORECAST PRODUCT"
+>>> assert a.designator == "AFG"
+>>> assert a.code.category == "ZFP"
+>>> assert a.code.designator == "AFG"
+</PRE>
+  
+      
+      <P CLASS="note">
+        This class contains <A HREF="class-nwscode.awipsid.AwipsId.html#members">
+          4 members</A>.
+      </P>
+    </DIV>
+  </DIV>
+    
+  
+  
+  <P>
+    <SMALL>
+    
+    
+    See 
+    <A HREF="nwscode/awipsid.py.html" TITLE="nwscode/awipsid.py:0">the source</A>
+    for more information.
+    </SMALL>
+  </P>
+</DIV>
+    
+    <DIV ID="footer">
+      
+      <P ID="pudge">
+        Built with
+        <A HREF="http://lesscode.org/projects/pudge/">
+          Pudge/0.1.1</A>
+      </P>
+      
+    </DIV>
+    </DIV>
+  </BODY>
+</HTML>

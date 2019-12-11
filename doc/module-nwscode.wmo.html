@@ -1,0 +1,243 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+  
+  <HEAD><META CONTENT="text/html; charset=utf-8" HTTP-EQUIV="Content-Type">
+    <TITLE>nwscode.wmo -- A parser for the &lt;em>WMO Abbreviated Header&lt;/em>.</TITLE>
+    <LINK HREF="layout.css" TYPE="text/css" REL="stylesheet">
+    
+  </HEAD>
+  <BODY>
+    <DIV ID="page">
+      
+    <DIV ID="top-nav">
+        <H1 ID="doc-title">
+        <A HREF="index.html" REL="index">nwscode</A></H1>
+        <DIV CLASS="online-navigation">
+          <A HREF="index.html" REL="index">index</A>
+          <SPAN ID="nav-docs">
+            
+          </SPAN>
+          
+          
+          <BR>
+          
+          
+          
+          <A HREF="module-nwscode.html" TITLE="nwscode reference">
+            nwscode
+          </A>
+          
+            
+            <A HREF="module-nwscode.wmo.html">details</A>
+            
+            <A HREF="module-nwscode.wmo-index.html">
+              tree
+            </A>
+            
+          
+        </DIV>
+    </DIV>
+    
+    <DIV ID="main-content">
+  
+  <H1 CLASS="pudge-member-page-heading">
+    <TT>wmo</TT>
+  </H1>
+  <H4 CLASS="pudge-member-page-subheading">
+    A parser for the <EM>WMO Abbreviated Header</EM>.
+  </H4>
+  <P CLASS="pudge-member-parent-link">
+    <SMALL>
+    The wmo module is accessible via the
+    <A HREF="module-nwscode.html">
+      <TT>nwscode</TT>
+    </A> module.
+    </SMALL>
+  </P>
+  <DIV ID="pudge-section-nav">
+  <UL>
+    <LI>
+      
+      <SPAN CLASS="pudge-missing-section-link">
+        Attributes
+      </SPAN>
+    </LI>
+    <LI>
+      
+      <SPAN CLASS="pudge-missing-section-link">
+        Functions
+      </SPAN>
+    </LI>
+    <LI>
+      <A HREF="#classes" CLASS="pudge-section-link">
+        Classes (3)
+      </A>
+      
+    </LI>
+      
+    <LI>
+      
+      <SPAN CLASS="pudge-missing-section-link">
+        Modules
+      </SPAN>
+    </LI>
+    <LI>
+      <A HREF="module-nwscode.wmo-index.html" CLASS="pudge-section-link">
+        Index
+      </A>
+    </LI>
+    <LI>
+      <A HREF="nwscode/wmo.py.html" CLASS="pudge-section-link">
+        Source
+      </A>
+    </LI>
+  </UL>
+  </DIV>
+  <DIV STYLE="clear: left">
+  </DIV>
+  <DIV CLASS="rst pudge-module-doc">
+    <P>Created by Alexander Ross on 2006-07-20.
+Copyright (c) 2006 NOAA's National Weather Service. All rights reserved.</P>
+  </DIV>
+  
+  <HR>
+  
+  
+  
+  
+    <A NAME="classes">
+  
+  
+    </A>
+    <H2>Classes</H2>
+    <DIV CLASS="pudge-member class ">
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">C</SPAN>
+      <TT>
+        <A HREF="class-nwscode.wmo.WmoError.html" CLASS="pudge-obj-link">WmoError</A>(...)</TT>
+      <A HREF="nwscode/wmo.py.html?f=24&amp;l=26#24" CLASS="pudge-member-view-source" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+      
+      <P CLASS="note">
+        This class contains <A HREF="class-nwscode.wmo.WmoError.html#members">
+          2 members</A>.
+      </P>
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member class ">
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">C</SPAN>
+      <TT>
+        <A HREF="class-nwscode.wmo.WmoHeader.html" CLASS="pudge-obj-link">WmoHeader</A>(...)</TT>
+      <A HREF="nwscode/wmo.py.html?f=27&amp;l=68#27" CLASS="pudge-member-view-source" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      A <EM>World Meteorological Organization Abbreviated Header</EM> parser.
+    </P>
+    <P>For a full description of the WMO Header format see WMO Manual's 306
+and 386.  The National Weather Service has made much of this information
+available at the following address:</P>
+<BLOCKQUOTE>
+<A HREF="http://www.weather.gov/tg/headef.html" CLASS="reference">http://www.weather.gov/tg/headef.html</A></BLOCKQUOTE>
+<P>Attributes:</P>
+<BLOCKQUOTE>
+<DL CLASS="docutils">
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">designator</SPAN></TT></DT>
+<DD>Designator for the contents of the bulletin.</DD>
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">station</SPAN></TT></DT>
+<DD>The identification of the processing center that generated
+the bulletin.</DD>
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">issuance</SPAN></TT></DT>
+<DD>The product issuance time.</DD>
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">addendum</SPAN></TT></DT>
+<DD>The optional BBB group.</DD>
+</DL>
+</BLOCKQUOTE>
+  
+      
+      <P CLASS="note">
+        This class contains <A HREF="class-nwscode.wmo.WmoHeader.html#members">
+          4 members</A>.
+      </P>
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member class ">
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">C</SPAN>
+      <TT>
+        <A HREF="class-nwscode.wmo.WmoFile.html" CLASS="pudge-obj-link">WmoFile</A>(...)</TT>
+      <A HREF="nwscode/wmo.py.html?f=70&amp;l=101#70" CLASS="pudge-member-view-source" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      A <EM>World Meteorological Organization</EM> file name parser.
+    </P>
+    <P>For a full description of the WMO Header format see WMO Manual's 306
+and 386.  The National Weather Service has made much of this information
+available at the following address:</P>
+<BLOCKQUOTE>
+<A HREF="http://www.weather.gov/tg/headef.html" CLASS="reference">http://www.weather.gov/tg/headef.html</A></BLOCKQUOTE>
+<P>Attributes:</P>
+<BLOCKQUOTE>
+<DL CLASS="docutils">
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">designator</SPAN></TT></DT>
+<DD>Designator for the contents of the bulletin.</DD>
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">station</SPAN></TT></DT>
+<DD>The identification of the processing center that generated
+the bulletin.</DD>
+</DL>
+</BLOCKQUOTE>
+  
+      
+      <P CLASS="note">
+        This class contains <A HREF="class-nwscode.wmo.WmoFile.html#members">
+          4 members</A>.
+      </P>
+    </DIV>
+  </DIV>
+    
+  
+  
+  <P>
+    <SMALL>
+    
+    
+    See 
+    <A HREF="nwscode/wmo.py.html" TITLE="nwscode/wmo.py:0">the source</A>
+    for more information.
+    </SMALL>
+  </P>
+</DIV>
+    
+    <DIV ID="footer">
+      
+      <P ID="pudge">
+        Built with
+        <A HREF="http://lesscode.org/projects/pudge/">
+          Pudge/0.1.1</A>
+      </P>
+      
+    </DIV>
+    </DIV>
+  </BODY>
+</HTML>

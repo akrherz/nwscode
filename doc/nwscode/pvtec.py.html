@@ -1,0 +1,260 @@
+<html><head><title>/Users/Alexander/SandBox/nwscode/nwscode/pvtec.py</title>
+        <script type="text/javascript"><!--
+        
+function show_line_range() {
+    var href = document.location.href;
+    if (href.indexOf('?') == -1) {
+        return;
+    }
+    var qs = href.substring(href.indexOf('?')+1);
+    if (qs.indexOf('#') >= 0) {
+        qs = qs.substring(0, qs.indexOf('#'));
+    }
+    var first = qs.match(/f=(\d+)/)[1];
+    var last = qs.match(/l=(\d+)/)[1];
+    if (! first || ! last) {
+        return;
+    }
+    var anchors = document.getElementsByTagName('A');
+    var container = document.createElement('DIV');
+    container.className = 'highlighted';
+    var children = [];
+    var start = null;
+    var parent = null;
+    var highlight = false;
+    for (var i = 0; i < anchors.length; i++) {
+        var el = anchors[i];
+        if (el.getAttribute('name') == first) {
+            start = el.previousSibling;
+            parent = el.parentNode;
+            highlight = true;
+        }
+        if (el.getAttribute('name') == last) {
+            break;
+        }
+        if (highlight) {
+            children[children.length] = el;
+            el = el.nextSibling;
+            while (el && el.tagName != 'A') {
+                children[children.length] = el;
+                el = el.nextSibling;
+            }
+        }
+    }
+    for (i=0; i<children.length; i++) {
+        container.appendChild(children[i]);
+    }
+    if (start) {
+        start.parentNode.insertBefore(container, start.nextSibling);
+    } else {
+        parent.insertBefore(container, parent.childNodes[0]);
+    }
+}
+
+        // --></script>
+        <style>
+        div.python {
+          color: #333
+        }
+        div.python a.lnum {
+          color: #555;
+          background-color: #eee;
+          border-right: 1px solid #999;
+          padding-right: 2px;
+          margin-right: 4px;
+        }
+        div.python span.comment { color: #933 }
+        div.python span.keyword { color: #a3e; font-weight: bold  }
+        div.python span.op { color: #c96 }
+        div.python span.string { color: #6a6 }
+        div.python span.name { }
+        div.python span.text { color: #333 }
+        div.highlighted { background-color: #ff9; border: 1px solid #009 }
+        </style></head><body onload="show_line_range()"><div class="python"><code><a class="lnum" href="#1" name="1">0001</a><span class="comment">#!/usr/bin/env&#0160;python</span><br />
+<a class="lnum" href="#2" name="2">0002</a><span class="comment"></span><span class="comment">#&#0160;encoding:&#0160;utf-8</span><br />
+<a class="lnum" href="#3" name="3">0003</a><span class="comment"></span><span class="string">"""</span><br />
+<a class="lnum" href="#4" name="4">0004</a><span class="string">A&#0160;parser&#0160;for&#0160;the&#0160;*Primary&#0160;Valid&#0160;Time&#0160;Event&#0160;Code*.</span><br />
+<a class="lnum" href="#5" name="5">0005</a><span class="string"></span><br />
+<a class="lnum" href="#6" name="6">0006</a><span class="string">Created&#0160;by&#0160;Alexander&#0160;Ross&#0160;on&#0160;2006-07-15.</span><br />
+<a class="lnum" href="#7" name="7">0007</a><span class="string">Copyright&#0160;(c)&#0160;2006&#0160;NOAA's&#0160;National&#0160;Weather&#0160;Service.&#0160;All&#0160;rights&#0160;reserved.</span><br />
+<a class="lnum" href="#8" name="8">0008</a><span class="string">"""</span><br />
+<a class="lnum" href="#9" name="9">0009</a><br />
+<a class="lnum" href="#10" name="10">0010</a><span class="name">__all__</span>&#0160;<span class="op">=</span>&#0160;<span class="op">[</span><span class="string">"PvtecError"</span><span class="op">,</span>&#0160;<span class="string">"Pvtec"</span><span class="op">]</span><br />
+<a class="lnum" href="#11" name="11">0011</a><br />
+<a class="lnum" href="#12" name="12">0012</a><span class="keyword">import</span>&#0160;<span class="name">re</span><br />
+<a class="lnum" href="#13" name="13">0013</a><span class="keyword">from</span>&#0160;<span class="name">nwscode</span>&#0160;<span class="keyword">import</span>&#0160;<span class="name">NwsCode</span><span class="op">,</span>&#0160;<span class="name">NwsCodeError</span><br />
+<a class="lnum" href="#14" name="14">0014</a><span class="keyword">from</span>&#0160;<span class="name">misc</span>&#0160;<span class="keyword">import</span>&#0160;<span class="name">Bunch</span><span class="op">,</span>&#0160;<span class="name">parsevtectime</span><br />
+<a class="lnum" href="#15" name="15">0015</a><br />
+<a class="lnum" href="#16" name="16">0016</a><span class="comment">#&#0160;PVTEC&#0160;Grammar.</span><br />
+<a class="lnum" href="#17" name="17">0017</a><span class="comment"></span><span class="name">FIXEDIDENT</span>&#0160;<span class="op">=</span>&#0160;<span class="string">r"[OTEX]"</span><br />
+<a class="lnum" href="#18" name="18">0018</a><span class="name">ACTION</span>&#0160;<span class="op">=</span>&#0160;<span class="string">r"[A-Z]{3}"</span><br />
+<a class="lnum" href="#19" name="19">0019</a><span class="name">OFFICEIDENT</span>&#0160;<span class="op">=</span>&#0160;<span class="string">r"[A-Z]{4}"</span><br />
+<a class="lnum" href="#20" name="20">0020</a><span class="name">PHENOMENA</span>&#0160;<span class="op">=</span>&#0160;<span class="string">r"[A-Z]{2}"</span><br />
+<a class="lnum" href="#21" name="21">0021</a><span class="name">SIGNIFICANCE</span>&#0160;<span class="op">=</span>&#0160;<span class="string">r"[WAYSFON]"</span><br />
+<a class="lnum" href="#22" name="22">0022</a><span class="name">ETN</span>&#0160;<span class="op">=</span>&#0160;<span class="string">r"[0-9]{4}"</span><br />
+<a class="lnum" href="#23" name="23">0023</a><span class="name">EVENTBEGIN</span>&#0160;<span class="op">=</span>&#0160;<span class="string">r"[0-9]{6}T[0-9]{4}Z"</span><br />
+<a class="lnum" href="#24" name="24">0024</a><span class="name">EVENTEND</span>&#0160;<span class="op">=</span>&#0160;<span class="name">EVENTBEGIN</span><br />
+<a class="lnum" href="#25" name="25">0025</a><span class="name">elements</span>&#0160;<span class="op">=</span>&#0160;<span class="op">(</span><span class="name">FIXEDIDENT</span><span class="op">,</span>&#0160;<span class="name">ACTION</span><span class="op">,</span>&#0160;<span class="name">OFFICEIDENT</span><span class="op">,</span>&#0160;<span class="name">PHENOMENA</span><span class="op">,</span><br />
+<a class="lnum" href="#26" name="26">0026</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">SIGNIFICANCE</span><span class="op">,</span>&#0160;<span class="name">ETN</span><span class="op">,</span>&#0160;<span class="name">EVENTBEGIN</span><span class="op">,</span>&#0160;<span class="name">EVENTEND</span><span class="op">)</span><br />
+<a class="lnum" href="#27" name="27">0027</a><span class="name">PVTEC</span>&#0160;<span class="op">=</span>&#0160;<span class="string">r"^/(%s)\.(%s)\.(%s)\.(%s)\.(%s)\.(%s)\.(%s)\-(%s)/$"</span>&#0160;<span class="op">%</span>&#0160;<span class="name">elements</span><br />
+<a class="lnum" href="#28" name="28">0028</a><br />
+<a class="lnum" href="#29" name="29">0029</a><span class="keyword">class</span>&#0160;<span class="name">PvtecError</span><span class="op">(</span><span class="name">NwsCodeError</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#30" name="30">0030</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">pass</span><br />
+<a class="lnum" href="#31" name="31">0031</a><br />
+<a class="lnum" href="#32" name="32">0032</a><span class="keyword">class</span>&#0160;<span class="name">Pvtec</span><span class="op">(</span><span class="name">NwsCode</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#33" name="33">0033</a>&#0160;&#0160;&#0160;&#0160;<span class="string">"""</span><br />
+<a class="lnum" href="#34" name="34">0034</a><span class="string">&#0160;&#0160;&#0160;&#0160;A&#0160;``Primary&#0160;Valid&#0160;Time&#0160;Event&#0160;NwsCode``&#0160;parser.</span><br />
+<a class="lnum" href="#35" name="35">0035</a><span class="string">&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#36" name="36">0036</a><span class="string">&#0160;&#0160;&#0160;&#0160;For&#0160;a&#0160;full&#0160;description&#0160;of&#0160;the&#0160;P-VTEC&#0160;format&#0160;see&#0160;the&#0160;National&#0160;Weather</span><br />
+<a class="lnum" href="#37" name="37">0037</a><span class="string">&#0160;&#0160;&#0160;&#0160;Service's&#0160;VTEC&#0160;Directive:</span><br />
+<a class="lnum" href="#38" name="38">0038</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#39" name="39">0039</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;http://www.nws.noaa.gov/directives/sym/pd01017003curr.pdf</span><br />
+<a class="lnum" href="#40" name="40">0040</a><span class="string">&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#41" name="41">0041</a><span class="string">&#0160;&#0160;&#0160;&#0160;Attributes:</span><br />
+<a class="lnum" href="#42" name="42">0042</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#43" name="43">0043</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;``fixedid``</span><br />
+<a class="lnum" href="#44" name="44">0044</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;The&#0160;Fixed&#0160;Identifier.&#0160;Identifies&#0160;the&#0160;following&#0160;product&#0160;and&#0160;VTEC</span><br />
+<a class="lnum" href="#45" name="45">0045</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;code&#0160;string&#0160;types.</span><br />
+<a class="lnum" href="#46" name="46">0046</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#47" name="47">0047</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;``action``</span><br />
+<a class="lnum" href="#48" name="48">0048</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;Identifies&#0160;the&#0160;action&#0160;in&#0160;the&#0160;product&#0160;issuance.</span><br />
+<a class="lnum" href="#49" name="49">0049</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#50" name="50">0050</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;``officeid``</span><br />
+<a class="lnum" href="#51" name="51">0051</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;The&#0160;standard&#0160;four-letter&#0160;identifier&#0160;indicating&#0160;the&#0160;NWS&#0160;office</span><br />
+<a class="lnum" href="#52" name="52">0052</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;with&#0160;the&#0160;primary&#0160;responsibility&#0160;for&#0160;the&#0160;affected&#0160;area.</span><br />
+<a class="lnum" href="#53" name="53">0053</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#54" name="54">0054</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;``phenomena``</span><br />
+<a class="lnum" href="#55" name="55">0055</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;Identifies&#0160;the&#0160;type&#0160;of&#0160;weather,&#0160;flood,&#0160;marine,&#0160;fire&#0160;weather,</span><br />
+<a class="lnum" href="#56" name="56">0056</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;etc.,&#0160;occurrence&#0160;(e.g.,&#0160;freezing&#0160;rain,&#0160;river&#0160;flood,&#0160;gale,&#0160;red</span><br />
+<a class="lnum" href="#57" name="57">0057</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;flag),&#0160;or&#0160;non-weather&#0160;occurrence&#0160;(e.g.,&#0160;ashfall).</span><br />
+<a class="lnum" href="#58" name="58">0058</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#59" name="59">0059</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;``significance``</span><br />
+<a class="lnum" href="#60" name="60">0060</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;Identifies&#0160;the&#0160;level&#0160;of&#0160;importance&#0160;(e.g.,&#0160;watch,&#0160;warning,</span><br />
+<a class="lnum" href="#61" name="61">0061</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;advisory,&#0160;etc.)&#0160;of&#0160;the&#0160;weather&#0160;or&#0160;non-weather&#0160;occurrence.</span><br />
+<a class="lnum" href="#62" name="62">0062</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#63" name="63">0063</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;``etn``</span><br />
+<a class="lnum" href="#64" name="64">0064</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;The&#0160;ETN&#0160;is&#0160;a&#0160;four-digit&#0160;number&#0160;assigned&#0160;to&#0160;keep&#0160;track&#0160;of&#0160;how&#0160;an</span><br />
+<a class="lnum" href="#65" name="65">0065</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;event&#0160;is&#0160;addressed&#0160;by&#0160;various&#0160;VTEC&#0160;actions&#0160;and/or&#0160;products&#0160;issued</span><br />
+<a class="lnum" href="#66" name="66">0066</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;over&#0160;the&#0160;lifetime&#0160;of&#0160;the&#0160;event.</span><br />
+<a class="lnum" href="#67" name="67">0067</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#68" name="68">0068</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;``eventbegin``</span><br />
+<a class="lnum" href="#69" name="69">0069</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;Start&#0160;of&#0160;the&#0160;valid&#0160;time&#0160;span&#0160;for&#0160;the&#0160;event.</span><br />
+<a class="lnum" href="#70" name="70">0070</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#71" name="71">0071</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;``eventend``</span><br />
+<a class="lnum" href="#72" name="72">0072</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;End&#0160;of&#0160;the&#0160;valid&#0160;time&#0160;span&#0160;for&#0160;the&#0160;event.</span><br />
+<a class="lnum" href="#73" name="73">0073</a><span class="string">&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#74" name="74">0074</a><span class="string">&#0160;&#0160;&#0160;&#0160;Usage&#0160;Example:</span><br />
+<a class="lnum" href="#75" name="75">0075</a><span class="string">&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#76" name="76">0076</a><span class="string">&#0160;&#0160;&#0160;&#0160;&gt;&gt;&gt;&#0160;from&#0160;nwscode.pvtec&#0160;import&#0160;PVTEC</span><br />
+<a class="lnum" href="#77" name="77">0077</a><span class="string">&#0160;&#0160;&#0160;&#0160;&gt;&gt;&gt;&#0160;pvtec_string&#0160;=&#0160;'/X.EXT.PAFG.FG.Y.0002.000000T0000Z-060127T2100Z/'</span><br />
+<a class="lnum" href="#78" name="78">0078</a><span class="string">&#0160;&#0160;&#0160;&#0160;&gt;&gt;&gt;&#0160;pv&#0160;=&#0160;PVTEC(pvtec_string)</span><br />
+<a class="lnum" href="#79" name="79">0079</a><span class="string">&#0160;&#0160;&#0160;&#0160;&gt;&gt;&gt;&#0160;pv.action</span><br />
+<a class="lnum" href="#80" name="80">0080</a><span class="string">&#0160;&#0160;&#0160;&#0160;'Extended&#0160;in&#0160;time'</span><br />
+<a class="lnum" href="#81" name="81">0081</a><span class="string">&#0160;&#0160;&#0160;&#0160;&gt;&gt;&gt;&#0160;pv.significance</span><br />
+<a class="lnum" href="#82" name="82">0082</a><span class="string">&#0160;&#0160;&#0160;&#0160;'Advisory'</span><br />
+<a class="lnum" href="#83" name="83">0083</a><span class="string">&#0160;&#0160;&#0160;&#0160;&gt;&gt;&gt;</span><br />
+<a class="lnum" href="#84" name="84">0084</a><span class="string">&#0160;&#0160;&#0160;&#0160;"""</span><br />
+<a class="lnum" href="#85" name="85">0085</a><br />
+<a class="lnum" href="#86" name="86">0086</a>&#0160;&#0160;&#0160;&#0160;<span class="name">pattern</span>&#0160;<span class="op">=</span>&#0160;<span class="name">re</span><span class="op">.</span><span class="name">compile</span><span class="op">(</span><span class="name">PVTEC</span><span class="op">,</span>&#0160;<span class="name">re</span><span class="op">.</span><span class="name">M</span><span class="op">)</span><br />
+<a class="lnum" href="#87" name="87">0087</a>&#0160;&#0160;&#0160;&#0160;<span class="name">error</span>&#0160;<span class="op">=</span>&#0160;<span class="name">PvtecError</span><br />
+<a class="lnum" href="#88" name="88">0088</a>&#0160;&#0160;&#0160;&#0160;<span class="name">interpreted</span>&#0160;<span class="op">=</span>&#0160;<span class="op">{</span><br />
+<a class="lnum" href="#89" name="89">0089</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">"action"</span><span class="op">:</span><br />
+<a class="lnum" href="#90" name="90">0090</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="op">{</span><span class="string">'NEW'</span><span class="op">:</span>&#0160;<span class="string">'New'</span><span class="op">,</span><br />
+<a class="lnum" href="#91" name="91">0091</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'CON'</span><span class="op">:</span>&#0160;<span class="string">'Continued'</span><span class="op">,</span><br />
+<a class="lnum" href="#92" name="92">0092</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'EXT'</span><span class="op">:</span>&#0160;<span class="string">'Extended&#0160;in&#0160;time'</span><span class="op">,</span><br />
+<a class="lnum" href="#93" name="93">0093</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'EXA'</span><span class="op">:</span>&#0160;<span class="string">'Extended&#0160;in&#0160;area'</span><span class="op">,</span><br />
+<a class="lnum" href="#94" name="94">0094</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'UPG'</span><span class="op">:</span>&#0160;<span class="string">'Upgraded'</span><span class="op">,</span><br />
+<a class="lnum" href="#95" name="95">0095</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'CAN'</span><span class="op">:</span>&#0160;<span class="string">'Cancelled'</span><span class="op">,</span><br />
+<a class="lnum" href="#96" name="96">0096</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'EXP'</span><span class="op">:</span>&#0160;<span class="string">'Expired'</span><span class="op">,</span><br />
+<a class="lnum" href="#97" name="97">0097</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'COR'</span><span class="op">:</span>&#0160;<span class="string">'Correction'</span><span class="op">,</span><br />
+<a class="lnum" href="#98" name="98">0098</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'ROU'</span><span class="op">:</span>&#0160;<span class="string">'Routine'</span><span class="op">}</span><span class="op">,</span><br />
+<a class="lnum" href="#99" name="99">0099</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">"fixedid"</span><span class="op">:</span><br />
+<a class="lnum" href="#100" name="100">0100</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="op">{</span><span class="string">'O'</span><span class="op">:</span>&#0160;<span class="string">'Operational&#0160;Product'</span><span class="op">,</span><br />
+<a class="lnum" href="#101" name="101">0101</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'T'</span><span class="op">:</span>&#0160;<span class="string">'Test&#0160;Product'</span><span class="op">,</span><br />
+<a class="lnum" href="#102" name="102">0102</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'E'</span><span class="op">:</span>&#0160;<span class="string">'Experimental&#0160;Product'</span><span class="op">,</span><br />
+<a class="lnum" href="#103" name="103">0103</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'X'</span><span class="op">:</span>&#0160;<span class="string">'Experimental&#0160;VTEC&#0160;in&#0160;an&#0160;Operational&#0160;Product'</span><span class="op">}</span><span class="op">,</span><br />
+<a class="lnum" href="#104" name="104">0104</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">"phenomena"</span><span class="op">:</span><br />
+<a class="lnum" href="#105" name="105">0105</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="op">{</span><span class="string">'AF'</span><span class="op">:</span>&#0160;<span class="string">'Ashfall'</span><span class="op">,</span><br />
+<a class="lnum" href="#106" name="106">0106</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'AS'</span><span class="op">:</span>&#0160;<span class="string">'Air&#0160;Stagnation'</span><span class="op">,</span><br />
+<a class="lnum" href="#107" name="107">0107</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'BS'</span><span class="op">:</span>&#0160;<span class="string">'Blowing&#0160;Snow'</span><span class="op">,</span><br />
+<a class="lnum" href="#108" name="108">0108</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'BW'</span><span class="op">:</span>&#0160;<span class="string">'Brisk&#0160;Wind'</span><span class="op">,</span><br />
+<a class="lnum" href="#109" name="109">0109</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'BZ'</span><span class="op">:</span>&#0160;<span class="string">'Blizzard'</span><span class="op">,</span><br />
+<a class="lnum" href="#110" name="110">0110</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'CF'</span><span class="op">:</span>&#0160;<span class="string">'Coastal&#0160;Flood'</span><span class="op">,</span><br />
+<a class="lnum" href="#111" name="111">0111</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'DS'</span><span class="op">:</span>&#0160;<span class="string">'Dust&#0160;Storm'</span><span class="op">,</span><br />
+<a class="lnum" href="#112" name="112">0112</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'DU'</span><span class="op">:</span>&#0160;<span class="string">'Blowing&#0160;Dust'</span><span class="op">,</span><br />
+<a class="lnum" href="#113" name="113">0113</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'EC'</span><span class="op">:</span>&#0160;<span class="string">'Extreme&#0160;Cold'</span><span class="op">,</span><br />
+<a class="lnum" href="#114" name="114">0114</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'EH'</span><span class="op">:</span>&#0160;<span class="string">'Excessive&#0160;Heat'</span><span class="op">,</span><br />
+<a class="lnum" href="#115" name="115">0115</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'FA'</span><span class="op">:</span>&#0160;<span class="string">'Areal&#0160;Flood'</span><span class="op">,</span><br />
+<a class="lnum" href="#116" name="116">0116</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'FF'</span><span class="op">:</span>&#0160;<span class="string">'Flash&#0160;Flood'</span><span class="op">,</span><br />
+<a class="lnum" href="#117" name="117">0117</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'FG'</span><span class="op">:</span>&#0160;<span class="string">'Dense&#0160;Fog'</span><span class="op">,</span><br />
+<a class="lnum" href="#118" name="118">0118</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'FL'</span><span class="op">:</span>&#0160;<span class="string">'Flood'</span><span class="op">,</span><br />
+<a class="lnum" href="#119" name="119">0119</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'FR'</span><span class="op">:</span>&#0160;<span class="string">'Frost'</span><span class="op">,</span><br />
+<a class="lnum" href="#120" name="120">0120</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'FW'</span><span class="op">:</span>&#0160;<span class="string">'Fire&#0160;Weather'</span><span class="op">,</span><br />
+<a class="lnum" href="#121" name="121">0121</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'FZ'</span><span class="op">:</span>&#0160;<span class="string">'Freeze'</span><span class="op">,</span><br />
+<a class="lnum" href="#122" name="122">0122</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'GL'</span><span class="op">:</span>&#0160;<span class="string">'Gale'</span><span class="op">,</span><br />
+<a class="lnum" href="#123" name="123">0123</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'HF'</span><span class="op">:</span>&#0160;<span class="string">'Hurricane&#0160;Force&#0160;Wind'</span><span class="op">,</span><br />
+<a class="lnum" href="#124" name="124">0124</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'HI'</span><span class="op">:</span>&#0160;<span class="string">'Inland&#0160;Hurricane'</span><span class="op">,</span><br />
+<a class="lnum" href="#125" name="125">0125</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'HS'</span><span class="op">:</span>&#0160;<span class="string">'Heavy&#0160;Snow'</span><span class="op">,</span><br />
+<a class="lnum" href="#126" name="126">0126</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'HT'</span><span class="op">:</span>&#0160;<span class="string">'Heat'</span><span class="op">,</span><br />
+<a class="lnum" href="#127" name="127">0127</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'HU'</span><span class="op">:</span>&#0160;<span class="string">'Hurricane'</span><span class="op">,</span><br />
+<a class="lnum" href="#128" name="128">0128</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'HW'</span><span class="op">:</span>&#0160;<span class="string">'High&#0160;Wind'</span><span class="op">,</span><br />
+<a class="lnum" href="#129" name="129">0129</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'HY'</span><span class="op">:</span>&#0160;<span class="string">'Hydrologic'</span><span class="op">,</span><br />
+<a class="lnum" href="#130" name="130">0130</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'HZ'</span><span class="op">:</span>&#0160;<span class="string">'Hard&#0160;Freeze'</span><span class="op">,</span><br />
+<a class="lnum" href="#131" name="131">0131</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'IP'</span><span class="op">:</span>&#0160;<span class="string">'Sleet'</span><span class="op">,</span><br />
+<a class="lnum" href="#132" name="132">0132</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'IS'</span><span class="op">:</span>&#0160;<span class="string">'Ice&#0160;Storm'</span><span class="op">,</span><br />
+<a class="lnum" href="#133" name="133">0133</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'LB'</span><span class="op">:</span>&#0160;<span class="string">'Lake&#0160;Effect&#0160;Snow&#0160;and&#0160;Blowing&#0160;Snow'</span><span class="op">,</span><br />
+<a class="lnum" href="#134" name="134">0134</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'LE'</span><span class="op">:</span>&#0160;<span class="string">'Lake&#0160;Effect&#0160;Snow'</span><span class="op">,</span><br />
+<a class="lnum" href="#135" name="135">0135</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'LO'</span><span class="op">:</span>&#0160;<span class="string">'Low&#0160;Water'</span><span class="op">,</span><br />
+<a class="lnum" href="#136" name="136">0136</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'LS'</span><span class="op">:</span>&#0160;<span class="string">'Lakeshore&#0160;Flood'</span><span class="op">,</span><br />
+<a class="lnum" href="#137" name="137">0137</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'LW'</span><span class="op">:</span>&#0160;<span class="string">'Lake&#0160;Wind'</span><span class="op">,</span><br />
+<a class="lnum" href="#138" name="138">0138</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'MA'</span><span class="op">:</span>&#0160;<span class="string">'Marine'</span><span class="op">,</span><br />
+<a class="lnum" href="#139" name="139">0139</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'RB'</span><span class="op">:</span>&#0160;<span class="string">'Small&#0160;Craft&#0160;for&#0160;Rough&#0160;Bar'</span><span class="op">,</span><br />
+<a class="lnum" href="#140" name="140">0140</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'SB'</span><span class="op">:</span>&#0160;<span class="string">'Snow&#0160;and&#0160;Blowing&#0160;Snow'</span><span class="op">,</span><br />
+<a class="lnum" href="#141" name="141">0141</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'SC'</span><span class="op">:</span>&#0160;<span class="string">'Small&#0160;Craft'</span><span class="op">,</span><br />
+<a class="lnum" href="#142" name="142">0142</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'SE'</span><span class="op">:</span>&#0160;<span class="string">'Hazardous&#0160;Seas'</span><span class="op">,</span><br />
+<a class="lnum" href="#143" name="143">0143</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'SI'</span><span class="op">:</span>&#0160;<span class="string">'Small&#0160;Craft&#0160;for&#0160;Winds'</span><span class="op">,</span><br />
+<a class="lnum" href="#144" name="144">0144</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'SM'</span><span class="op">:</span>&#0160;<span class="string">'Dense&#0160;Smoke'</span><span class="op">,</span><br />
+<a class="lnum" href="#145" name="145">0145</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'SN'</span><span class="op">:</span>&#0160;<span class="string">'Snow'</span><span class="op">,</span><br />
+<a class="lnum" href="#146" name="146">0146</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'SR'</span><span class="op">:</span>&#0160;<span class="string">'Storm'</span><span class="op">,</span><br />
+<a class="lnum" href="#147" name="147">0147</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'SU'</span><span class="op">:</span>&#0160;<span class="string">'High&#0160;Surf'</span><span class="op">,</span><br />
+<a class="lnum" href="#148" name="148">0148</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'SV'</span><span class="op">:</span>&#0160;<span class="string">'Severe&#0160;Thunderstorm'</span><span class="op">,</span><br />
+<a class="lnum" href="#149" name="149">0149</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'SW'</span><span class="op">:</span>&#0160;<span class="string">'Small&#0160;Craft&#0160;for&#0160;Hazardous&#0160;Seas'</span><span class="op">,</span><br />
+<a class="lnum" href="#150" name="150">0150</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'TI'</span><span class="op">:</span>&#0160;<span class="string">'Inland&#0160;Tropical&#0160;Storm'</span><span class="op">,</span><br />
+<a class="lnum" href="#151" name="151">0151</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'TO'</span><span class="op">:</span>&#0160;<span class="string">'Tornado'</span><span class="op">,</span><br />
+<a class="lnum" href="#152" name="152">0152</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'TR'</span><span class="op">:</span>&#0160;<span class="string">'Tropical&#0160;Storm'</span><span class="op">,</span><br />
+<a class="lnum" href="#153" name="153">0153</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'TS'</span><span class="op">:</span>&#0160;<span class="string">'Tsunami'</span><span class="op">,</span><br />
+<a class="lnum" href="#154" name="154">0154</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'TY'</span><span class="op">:</span>&#0160;<span class="string">'Typhoon'</span><span class="op">,</span><br />
+<a class="lnum" href="#155" name="155">0155</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'UP'</span><span class="op">:</span>&#0160;<span class="string">'Ice&#0160;Accretion'</span><span class="op">,</span><br />
+<a class="lnum" href="#156" name="156">0156</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'WC'</span><span class="op">:</span>&#0160;<span class="string">'Wind&#0160;Chill'</span><span class="op">,</span><br />
+<a class="lnum" href="#157" name="157">0157</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'WI'</span><span class="op">:</span>&#0160;<span class="string">'Wind'</span><span class="op">,</span><br />
+<a class="lnum" href="#158" name="158">0158</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'WS'</span><span class="op">:</span>&#0160;<span class="string">'Winter&#0160;Storm'</span><span class="op">,</span><br />
+<a class="lnum" href="#159" name="159">0159</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'WW'</span><span class="op">:</span>&#0160;<span class="string">'Winter&#0160;Weather'</span><span class="op">,</span><br />
+<a class="lnum" href="#160" name="160">0160</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'ZF'</span><span class="op">:</span>&#0160;<span class="string">'Freezing&#0160;Fog'</span><span class="op">,</span><br />
+<a class="lnum" href="#161" name="161">0161</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'ZR'</span><span class="op">:</span>&#0160;<span class="string">'Freezing&#0160;Rain'</span><span class="op">}</span><span class="op">,</span><br />
+<a class="lnum" href="#162" name="162">0162</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">"significance"</span><span class="op">:</span><br />
+<a class="lnum" href="#163" name="163">0163</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="op">{</span><span class="string">'W'</span><span class="op">:</span>&#0160;<span class="string">'Warning'</span><span class="op">,</span><br />
+<a class="lnum" href="#164" name="164">0164</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'A'</span><span class="op">:</span>&#0160;<span class="string">'Watch'</span><span class="op">,</span><br />
+<a class="lnum" href="#165" name="165">0165</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'Y'</span><span class="op">:</span>&#0160;<span class="string">'Advisory'</span><span class="op">,</span><br />
+<a class="lnum" href="#166" name="166">0166</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'S'</span><span class="op">:</span>&#0160;<span class="string">'Statement'</span><span class="op">,</span><br />
+<a class="lnum" href="#167" name="167">0167</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'F'</span><span class="op">:</span>&#0160;<span class="string">'Forecast'</span><span class="op">,</span><br />
+<a class="lnum" href="#168" name="168">0168</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'O'</span><span class="op">:</span>&#0160;<span class="string">'Outlook'</span><span class="op">,</span><br />
+<a class="lnum" href="#169" name="169">0169</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'N'</span><span class="op">:</span>&#0160;<span class="string">'Synopsis'</span><span class="op">}</span><br />
+<a class="lnum" href="#170" name="170">0170</a>&#0160;&#0160;&#0160;&#0160;<span class="op">}</span><br />
+<a class="lnum" href="#171" name="171">0171</a><br />
+<a class="lnum" href="#172" name="172">0172</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">_process_matches</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">matches</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#173" name="173">0173</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">code</span>&#0160;<span class="op">=</span>&#0160;<span class="name">Bunch</span><span class="op">(</span><span class="name">fixedid</span><span class="op">=</span><span class="name">matches</span><span class="op">[</span><span class="number">0</span><span class="op">]</span><span class="op">,</span><br />
+<a class="lnum" href="#174" name="174">0174</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">action</span><span class="op">=</span><span class="name">matches</span><span class="op">[</span><span class="number">1</span><span class="op">]</span><span class="op">,</span><br />
+<a class="lnum" href="#175" name="175">0175</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">officeid</span><span class="op">=</span><span class="name">matches</span><span class="op">[</span><span class="number">2</span><span class="op">]</span><span class="op">,</span><br />
+<a class="lnum" href="#176" name="176">0176</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">phenomena</span><span class="op">=</span><span class="name">matches</span><span class="op">[</span><span class="number">3</span><span class="op">]</span><span class="op">,</span><br />
+<a class="lnum" href="#177" name="177">0177</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">significance</span><span class="op">=</span><span class="name">matches</span><span class="op">[</span><span class="number">4</span><span class="op">]</span><span class="op">,</span><br />
+<a class="lnum" href="#178" name="178">0178</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">etn</span><span class="op">=</span><span class="name">matches</span><span class="op">[</span><span class="number">5</span><span class="op">]</span><span class="op">,</span><br />
+<a class="lnum" href="#179" name="179">0179</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">eventbegin</span><span class="op">=</span><span class="name">matches</span><span class="op">[</span><span class="number">6</span><span class="op">]</span><span class="op">,</span><br />
+<a class="lnum" href="#180" name="180">0180</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">eventend</span><span class="op">=</span><span class="name">matches</span><span class="op">[</span><span class="number">7</span><span class="op">]</span><span class="op">)</span><br />
+<a class="lnum" href="#181" name="181">0181</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">fixedid</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">_interpret</span><span class="op">(</span><span class="string">"fixedid"</span><span class="op">,</span>&#0160;<span class="name">matches</span><span class="op">[</span><span class="number">0</span><span class="op">]</span><span class="op">)</span><br />
+<a class="lnum" href="#182" name="182">0182</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">action</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">_interpret</span><span class="op">(</span><span class="string">"action"</span><span class="op">,</span>&#0160;<span class="name">matches</span><span class="op">[</span><span class="number">1</span><span class="op">]</span><span class="op">)</span><br />
+<a class="lnum" href="#183" name="183">0183</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">officeid</span>&#0160;<span class="op">=</span>&#0160;<span class="name">matches</span><span class="op">[</span><span class="number">2</span><span class="op">]</span><br />
+<a class="lnum" href="#184" name="184">0184</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">phenomena</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">_interpret</span><span class="op">(</span><span class="string">"phenomena"</span><span class="op">,</span>&#0160;<span class="name">matches</span><span class="op">[</span><span class="number">3</span><span class="op">]</span><span class="op">)</span><br />
+<a class="lnum" href="#185" name="185">0185</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">significance</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">_interpret</span><span class="op">(</span><span class="string">"significance"</span><span class="op">,</span>&#0160;<span class="name">matches</span><span class="op">[</span><span class="number">4</span><span class="op">]</span><span class="op">)</span><br />
+<a class="lnum" href="#186" name="186">0186</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">etn</span>&#0160;<span class="op">=</span>&#0160;<span class="name">int</span><span class="op">(</span><span class="name">matches</span><span class="op">[</span><span class="number">5</span><span class="op">]</span><span class="op">)</span><br />
+<a class="lnum" href="#187" name="187">0187</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">eventbegin</span>&#0160;<span class="op">=</span>&#0160;<span class="name">parsevtectime</span><span class="op">(</span><span class="name">matches</span><span class="op">[</span><span class="number">6</span><span class="op">]</span><span class="op">)</span><br />
+<a class="lnum" href="#188" name="188">0188</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">eventend</span>&#0160;<span class="op">=</span>&#0160;<span class="name">parsevtectime</span><span class="op">(</span><span class="name">matches</span><span class="op">[</span><span class="number">7</span><span class="op">]</span><span class="op">)</span></code></div></body></html>

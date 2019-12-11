@@ -1,0 +1,197 @@
+<html><head><title>/Users/Alexander/SandBox/nwscode/nwscode/hvtec.py</title>
+        <script type="text/javascript"><!--
+        
+function show_line_range() {
+    var href = document.location.href;
+    if (href.indexOf('?') == -1) {
+        return;
+    }
+    var qs = href.substring(href.indexOf('?')+1);
+    if (qs.indexOf('#') >= 0) {
+        qs = qs.substring(0, qs.indexOf('#'));
+    }
+    var first = qs.match(/f=(\d+)/)[1];
+    var last = qs.match(/l=(\d+)/)[1];
+    if (! first || ! last) {
+        return;
+    }
+    var anchors = document.getElementsByTagName('A');
+    var container = document.createElement('DIV');
+    container.className = 'highlighted';
+    var children = [];
+    var start = null;
+    var parent = null;
+    var highlight = false;
+    for (var i = 0; i < anchors.length; i++) {
+        var el = anchors[i];
+        if (el.getAttribute('name') == first) {
+            start = el.previousSibling;
+            parent = el.parentNode;
+            highlight = true;
+        }
+        if (el.getAttribute('name') == last) {
+            break;
+        }
+        if (highlight) {
+            children[children.length] = el;
+            el = el.nextSibling;
+            while (el && el.tagName != 'A') {
+                children[children.length] = el;
+                el = el.nextSibling;
+            }
+        }
+    }
+    for (i=0; i<children.length; i++) {
+        container.appendChild(children[i]);
+    }
+    if (start) {
+        start.parentNode.insertBefore(container, start.nextSibling);
+    } else {
+        parent.insertBefore(container, parent.childNodes[0]);
+    }
+}
+
+        // --></script>
+        <style>
+        div.python {
+          color: #333
+        }
+        div.python a.lnum {
+          color: #555;
+          background-color: #eee;
+          border-right: 1px solid #999;
+          padding-right: 2px;
+          margin-right: 4px;
+        }
+        div.python span.comment { color: #933 }
+        div.python span.keyword { color: #a3e; font-weight: bold  }
+        div.python span.op { color: #c96 }
+        div.python span.string { color: #6a6 }
+        div.python span.name { }
+        div.python span.text { color: #333 }
+        div.highlighted { background-color: #ff9; border: 1px solid #009 }
+        </style></head><body onload="show_line_range()"><div class="python"><code><a class="lnum" href="#1" name="1">0001</a><span class="comment">#!/usr/bin/env&#0160;python</span><br />
+<a class="lnum" href="#2" name="2">0002</a><span class="comment"></span><span class="comment">#&#0160;encoding:&#0160;utf-8</span><br />
+<a class="lnum" href="#3" name="3">0003</a><span class="comment"></span><span class="string">"""</span><br />
+<a class="lnum" href="#4" name="4">0004</a><span class="string">A&#0160;parser&#0160;for&#0160;the&#0160;*Hydrologic&#0160;Valid&#0160;Time&#0160;Event&#0160;Code*.</span><br />
+<a class="lnum" href="#5" name="5">0005</a><span class="string"></span><br />
+<a class="lnum" href="#6" name="6">0006</a><span class="string">Created&#0160;by&#0160;Alexander&#0160;Ross&#0160;on&#0160;2006-07-15.</span><br />
+<a class="lnum" href="#7" name="7">0007</a><span class="string">Copyright&#0160;(c)&#0160;2006&#0160;NOAA's&#0160;National&#0160;Weather&#0160;Service.&#0160;All&#0160;rights&#0160;reserved.</span><br />
+<a class="lnum" href="#8" name="8">0008</a><span class="string">"""</span><br />
+<a class="lnum" href="#9" name="9">0009</a><br />
+<a class="lnum" href="#10" name="10">0010</a><span class="name">__all__</span>&#0160;<span class="op">=</span>&#0160;<span class="op">[</span><span class="string">"HvtecError"</span><span class="op">,</span>&#0160;<span class="string">"Hvtec"</span><span class="op">]</span><br />
+<a class="lnum" href="#11" name="11">0011</a><br />
+<a class="lnum" href="#12" name="12">0012</a><span class="keyword">import</span>&#0160;<span class="name">re</span><br />
+<a class="lnum" href="#13" name="13">0013</a><br />
+<a class="lnum" href="#14" name="14">0014</a><span class="keyword">from</span>&#0160;<span class="name">nwscode</span>&#0160;<span class="keyword">import</span>&#0160;<span class="name">NwsCode</span><span class="op">,</span>&#0160;<span class="name">NwsCodeError</span><br />
+<a class="lnum" href="#15" name="15">0015</a><span class="keyword">from</span>&#0160;<span class="name">misc</span>&#0160;<span class="keyword">import</span>&#0160;<span class="name">Bunch</span><span class="op">,</span>&#0160;<span class="name">parsevtectime</span><br />
+<a class="lnum" href="#16" name="16">0016</a><br />
+<a class="lnum" href="#17" name="17">0017</a><span class="comment">#&#0160;Defining&#0160;HVTEC&#0160;grammar.</span><br />
+<a class="lnum" href="#18" name="18">0018</a><span class="comment"></span><span class="comment">#&#0160;/nwsli.s.ic.yymmddThhnnZ.yymmddThhnnZ.yymmddThhnnZ.fr/</span><br />
+<a class="lnum" href="#19" name="19">0019</a><span class="comment"></span><span class="name">SITEID</span>&#0160;<span class="op">=</span>&#0160;<span class="string">r"[A-Z0-9]{5}"</span><br />
+<a class="lnum" href="#20" name="20">0020</a><span class="name">SEVERITY</span>&#0160;<span class="op">=</span>&#0160;<span class="string">r"[N0123U]"</span><br />
+<a class="lnum" href="#21" name="21">0021</a><span class="name">CAUSE</span>&#0160;<span class="op">=</span>&#0160;<span class="string">r"[A-Z]{2}"</span><br />
+<a class="lnum" href="#22" name="22">0022</a><span class="name">BEGIN</span>&#0160;<span class="op">=</span>&#0160;<span class="string">r"[0-9]{6}T[0-9]{4}Z"</span><br />
+<a class="lnum" href="#23" name="23">0023</a><span class="name">CREST</span>&#0160;<span class="op">=</span>&#0160;<span class="name">BEGIN</span><br />
+<a class="lnum" href="#24" name="24">0024</a><span class="name">END</span>&#0160;<span class="op">=</span>&#0160;<span class="name">BEGIN</span><br />
+<a class="lnum" href="#25" name="25">0025</a><span class="name">STATUS</span>&#0160;<span class="op">=</span>&#0160;<span class="string">r"[A-Z]{2}"</span><br />
+<a class="lnum" href="#26" name="26">0026</a><span class="name">elements</span>&#0160;<span class="op">=</span>&#0160;<span class="op">(</span><span class="name">SITEID</span><span class="op">,</span>&#0160;<span class="name">SEVERITY</span><span class="op">,</span>&#0160;<span class="name">CAUSE</span><span class="op">,</span>&#0160;<span class="name">BEGIN</span><span class="op">,</span>&#0160;<span class="name">CREST</span><span class="op">,</span>&#0160;<span class="name">END</span><span class="op">,</span>&#0160;<span class="name">STATUS</span><span class="op">)</span><br />
+<a class="lnum" href="#27" name="27">0027</a><span class="name">HVTEC</span>&#0160;<span class="op">=</span>&#0160;<span class="string">r"^/(%s)\.(%s)\.(%s)\.(%s)\.(%s)\.(%s)\.(%s)/$"</span>&#0160;<span class="op">%</span>&#0160;<span class="name">elements</span><br />
+<a class="lnum" href="#28" name="28">0028</a><br />
+<a class="lnum" href="#29" name="29">0029</a><span class="keyword">class</span>&#0160;<span class="name">HvtecError</span><span class="op">(</span><span class="name">NwsCodeError</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#30" name="30">0030</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">pass</span><br />
+<a class="lnum" href="#31" name="31">0031</a><br />
+<a class="lnum" href="#32" name="32">0032</a><span class="keyword">class</span>&#0160;<span class="name">Hvtec</span><span class="op">(</span><span class="name">NwsCode</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#33" name="33">0033</a>&#0160;&#0160;&#0160;&#0160;<span class="string">"""</span><br />
+<a class="lnum" href="#34" name="34">0034</a><span class="string">&#0160;&#0160;&#0160;&#0160;A&#0160;*Hydrologic&#0160;Valid&#0160;Time&#0160;Event&#0160;Code*&#0160;Parser.</span><br />
+<a class="lnum" href="#35" name="35">0035</a><span class="string">&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#36" name="36">0036</a><span class="string">&#0160;&#0160;&#0160;&#0160;Initialize&#0160;this&#0160;object&#0160;with&#0160;a&#0160;H-VTEC&#0160;string.&#0160;For&#0160;a&#0160;full&#0160;description</span><br />
+<a class="lnum" href="#37" name="37">0037</a><span class="string">&#0160;&#0160;&#0160;&#0160;of&#0160;the&#0160;H-VTEC&#0160;format&#0160;see:</span><br />
+<a class="lnum" href="#38" name="38">0038</a><span class="string">&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#39" name="39">0039</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;http://www.weather.gov/directives/sym/pd01017003curr.pdf</span><br />
+<a class="lnum" href="#40" name="40">0040</a><span class="string">&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#41" name="41">0041</a><span class="string">&#0160;&#0160;&#0160;&#0160;Attributes:</span><br />
+<a class="lnum" href="#42" name="42">0042</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#43" name="43">0043</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;``siteid``</span><br />
+<a class="lnum" href="#44" name="44">0044</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;Five&#0160;character&#0160;NWS&#0160;Site&#0160;Identifier.&#0160;&#0160;For&#0160;areal&#0160;flood,&#0160;flash&#0160;flood,</span><br />
+<a class="lnum" href="#45" name="45">0045</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;and&#0160;flood&#0160;advisory&#0160;products,&#0160;encoded&#0160;as&#0160;five&#0160;zeros&#0160;(00000).</span><br />
+<a class="lnum" href="#46" name="46">0046</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#47" name="47">0047</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;``floodseverity``</span><br />
+<a class="lnum" href="#48" name="48">0048</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;Identifies&#0160;the&#0160;severity&#0160;of&#0160;the&#0160;flooding&#0160;on&#0160;rivers&#0160;and&#0160;streams</span><br />
+<a class="lnum" href="#49" name="49">0049</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;where&#0160;point-specific&#0160;flood&#0160;warning&#0160;products&#0160;are&#0160;issued.</span><br />
+<a class="lnum" href="#50" name="50">0050</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#51" name="51">0051</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;``immediatecause``</span><br />
+<a class="lnum" href="#52" name="52">0052</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;Identifies&#0160;the&#0160;immediate&#0160;cause&#0160;of&#0160;the&#0160;flood.</span><br />
+<a class="lnum" href="#53" name="53">0053</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#54" name="54">0054</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;``floodbegin``</span><br />
+<a class="lnum" href="#55" name="55">0055</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;Represents&#0160;the&#0160;actual&#0160;beginning&#0160;time&#0160;of&#0160;the&#0160;flooding.</span><br />
+<a class="lnum" href="#56" name="56">0056</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#57" name="57">0057</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;``floodcrest``</span><br />
+<a class="lnum" href="#58" name="58">0058</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;Represents&#0160;the&#0160;actual&#0160;crest&#0160;time&#0160;of&#0160;the&#0160;flooding.</span><br />
+<a class="lnum" href="#59" name="59">0059</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#60" name="60">0060</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;``floodend``</span><br />
+<a class="lnum" href="#61" name="61">0061</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;Represents&#0160;the&#0160;actual&#0160;end&#0160;time&#0160;of&#0160;the&#0160;flooding.</span><br />
+<a class="lnum" href="#62" name="62">0062</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#63" name="63">0063</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;``recordstatus``</span><br />
+<a class="lnum" href="#64" name="64">0064</a><span class="string">&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;Identifies&#0160;how&#0160;the&#0160;flood&#0160;compares&#0160;to&#0160;the&#0160;flood&#0160;of&#0160;record.</span><br />
+<a class="lnum" href="#65" name="65">0065</a><span class="string">&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#66" name="66">0066</a><span class="string">&#0160;&#0160;&#0160;&#0160;Usage&#0160;Example:</span><br />
+<a class="lnum" href="#67" name="67">0067</a><span class="string">&#0160;&#0160;&#0160;&#0160;</span><br />
+<a class="lnum" href="#68" name="68">0068</a><span class="string">&#0160;&#0160;&#0160;&#0160;&gt;&gt;&gt;&#0160;from&#0160;nwscode.hvtec&#0160;import&#0160;HVTEC</span><br />
+<a class="lnum" href="#69" name="69">0069</a><span class="string">&#0160;&#0160;&#0160;&#0160;&gt;&gt;&gt;&#0160;hvtec_string&#0160;=&#0160;'/DEMI4.1.ER.030509T2100Z.030510T0300Z.030510T0900Z.NO/'</span><br />
+<a class="lnum" href="#70" name="70">0070</a><span class="string">&#0160;&#0160;&#0160;&#0160;&gt;&gt;&gt;&#0160;hv&#0160;=&#0160;HVTEC(hvtec_string)</span><br />
+<a class="lnum" href="#71" name="71">0071</a><span class="string">&#0160;&#0160;&#0160;&#0160;&gt;&gt;&gt;&#0160;hv.floodseverity</span><br />
+<a class="lnum" href="#72" name="72">0072</a><span class="string">&#0160;&#0160;&#0160;&#0160;'Minor'</span><br />
+<a class="lnum" href="#73" name="73">0073</a><span class="string">&#0160;&#0160;&#0160;&#0160;&gt;&gt;&gt;&#0160;pv.immediatecause</span><br />
+<a class="lnum" href="#74" name="74">0074</a><span class="string">&#0160;&#0160;&#0160;&#0160;'Excessive&#0160;Rainfall'</span><br />
+<a class="lnum" href="#75" name="75">0075</a><span class="string">&#0160;&#0160;&#0160;&#0160;&gt;&gt;&gt;&#0160;</span><br />
+<a class="lnum" href="#76" name="76">0076</a><span class="string">&#0160;&#0160;&#0160;&#0160;"""</span><br />
+<a class="lnum" href="#77" name="77">0077</a><br />
+<a class="lnum" href="#78" name="78">0078</a>&#0160;&#0160;&#0160;&#0160;<span class="name">pattern</span>&#0160;<span class="op">=</span>&#0160;<span class="name">re</span><span class="op">.</span><span class="name">compile</span><span class="op">(</span><span class="name">HVTEC</span><span class="op">)</span><br />
+<a class="lnum" href="#79" name="79">0079</a>&#0160;&#0160;&#0160;&#0160;<span class="name">error</span>&#0160;<span class="op">=</span>&#0160;<span class="name">HvtecError</span><br />
+<a class="lnum" href="#80" name="80">0080</a>&#0160;&#0160;&#0160;&#0160;<span class="name">interpreted</span>&#0160;<span class="op">=</span>&#0160;<span class="op">{</span><br />
+<a class="lnum" href="#81" name="81">0081</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">"floodseverity"</span><span class="op">:</span><br />
+<a class="lnum" href="#82" name="82">0082</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="op">{</span><span class="string">'N'</span><span class="op">:</span>&#0160;<span class="string">'None'</span><span class="op">,</span><br />
+<a class="lnum" href="#83" name="83">0083</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'0'</span><span class="op">:</span>&#0160;<span class="string">'Negligible'</span><span class="op">,</span><br />
+<a class="lnum" href="#84" name="84">0084</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'1'</span><span class="op">:</span>&#0160;<span class="string">'Minor'</span><span class="op">,</span><br />
+<a class="lnum" href="#85" name="85">0085</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'2'</span><span class="op">:</span>&#0160;<span class="string">'Moderate'</span><span class="op">,</span><br />
+<a class="lnum" href="#86" name="86">0086</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'3'</span><span class="op">:</span>&#0160;<span class="string">'Major'</span><span class="op">,</span><br />
+<a class="lnum" href="#87" name="87">0087</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'U'</span><span class="op">:</span>&#0160;<span class="string">'Unknown'</span><span class="op">}</span><span class="op">,</span><br />
+<a class="lnum" href="#88" name="88">0088</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">"recordstatus"</span>&#0160;<span class="op">:</span><br />
+<a class="lnum" href="#89" name="89">0089</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="op">{</span><span class="string">'OO'</span><span class="op">:</span>&#0160;<span class="string">'The&#0160;flood&#0160;record&#0160;status&#0160;is&#0160;not&#0160;applicable.'</span><span class="op">,</span><br />
+<a class="lnum" href="#90" name="90">0090</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'NO'</span><span class="op">:</span>&#0160;<span class="string">'A&#0160;record&#0160;flood&#0160;is&#0160;not&#0160;expected.'</span><span class="op">,</span><br />
+<a class="lnum" href="#91" name="91">0091</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'NR'</span><span class="op">:</span>&#0160;<span class="string">'A&#0160;near&#0160;record&#0160;or&#0160;record&#0160;flood&#0160;is&#0160;expected.'</span><span class="op">,</span><br />
+<a class="lnum" href="#92" name="92">0092</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'UU'</span><span class="op">:</span>&#0160;<span class="string">'There&#0160;is&#0160;no&#0160;period&#0160;of&#0160;record&#0160;to&#0160;compare&#0160;to.'</span><span class="op">}</span><span class="op">,</span><br />
+<a class="lnum" href="#93" name="93">0093</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">"immediatecause"</span><span class="op">:</span><br />
+<a class="lnum" href="#94" name="94">0094</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="op">{</span><span class="string">'ER'</span><span class="op">:</span>&#0160;<span class="string">'Excessive&#0160;Rainfall'</span><span class="op">,</span><br />
+<a class="lnum" href="#95" name="95">0095</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'SM'</span><span class="op">:</span>&#0160;<span class="string">'Snowmelt'</span><span class="op">,</span><br />
+<a class="lnum" href="#96" name="96">0096</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'RS'</span><span class="op">:</span>&#0160;<span class="string">'Rain&#0160;and&#0160;Snowmelt'</span><span class="op">,</span><br />
+<a class="lnum" href="#97" name="97">0097</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'DM'</span><span class="op">:</span>&#0160;<span class="string">'Dam&#0160;or&#0160;Levee&#0160;Failure'</span><span class="op">,</span><br />
+<a class="lnum" href="#98" name="98">0098</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'GO'</span><span class="op">:</span>&#0160;<span class="string">'Glacier-Dammed&#0160;Lake&#0160;Outburst'</span><span class="op">,</span><br />
+<a class="lnum" href="#99" name="99">0099</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'IJ'</span><span class="op">:</span>&#0160;<span class="string">'Ice&#0160;Jam'</span><span class="op">,</span><br />
+<a class="lnum" href="#100" name="100">0100</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'IC'</span><span class="op">:</span>&#0160;<span class="string">'Rain&#0160;and/or&#0160;Snowmelt&#0160;and/or&#0160;Ice&#0160;Jam'</span><span class="op">,</span><br />
+<a class="lnum" href="#101" name="101">0101</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'FS'</span><span class="op">:</span>&#0160;<span class="string">'Upstream&#0160;Flooding&#0160;plus&#0160;Storm&#0160;Surge'</span><span class="op">,</span><br />
+<a class="lnum" href="#102" name="102">0102</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'FT'</span><span class="op">:</span>&#0160;<span class="string">'Upstream&#0160;Flooding&#0160;plus&#0160;Tidal&#0160;Effects'</span><span class="op">,</span><br />
+<a class="lnum" href="#103" name="103">0103</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'ET'</span><span class="op">:</span>&#0160;<span class="string">'Elevated&#0160;Upstream&#0160;Flow&#0160;plus&#0160;Tidal&#0160;Effects'</span><span class="op">,</span><br />
+<a class="lnum" href="#104" name="104">0104</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'WT'</span><span class="op">:</span>&#0160;<span class="string">'Wind&#0160;and/or&#0160;Tidal&#0160;Effects'</span><span class="op">,</span><br />
+<a class="lnum" href="#105" name="105">0105</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'DR'</span><span class="op">:</span>&#0160;<span class="string">'Upstream&#0160;Dam&#0160;or&#0160;Resevoir&#0160;Release'</span><span class="op">,</span><br />
+<a class="lnum" href="#106" name="106">0106</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'MC'</span><span class="op">:</span>&#0160;<span class="string">'Other&#0160;Multiple&#0160;Causes'</span><span class="op">,</span><br />
+<a class="lnum" href="#107" name="107">0107</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'OT'</span><span class="op">:</span>&#0160;<span class="string">'Other&#0160;Effects'</span><span class="op">,</span><br />
+<a class="lnum" href="#108" name="108">0108</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="string">'UU'</span><span class="op">:</span>&#0160;<span class="string">'Unknown'</span><span class="op">}</span><br />
+<a class="lnum" href="#109" name="109">0109</a>&#0160;&#0160;&#0160;&#0160;<span class="op">}</span><br />
+<a class="lnum" href="#110" name="110">0110</a><br />
+<a class="lnum" href="#111" name="111">0111</a>&#0160;&#0160;&#0160;&#0160;<span class="keyword">def</span>&#0160;<span class="name">_process_matches</span><span class="op">(</span><span class="name">self</span><span class="op">,</span>&#0160;<span class="name">matches</span><span class="op">)</span><span class="op">:</span><br />
+<a class="lnum" href="#112" name="112">0112</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">code</span>&#0160;<span class="op">=</span>&#0160;<span class="name">Bunch</span><span class="op">(</span><span class="name">siteid</span><span class="op">=</span><span class="name">matches</span><span class="op">[</span><span class="number">0</span><span class="op">]</span><span class="op">,</span><br />
+<a class="lnum" href="#113" name="113">0113</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">floodseverity</span><span class="op">=</span><span class="name">matches</span><span class="op">[</span><span class="number">1</span><span class="op">]</span><span class="op">,</span><br />
+<a class="lnum" href="#114" name="114">0114</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">immediatecause</span><span class="op">=</span><span class="name">matches</span><span class="op">[</span><span class="number">2</span><span class="op">]</span><span class="op">,</span><br />
+<a class="lnum" href="#115" name="115">0115</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">floodbegin</span><span class="op">=</span><span class="name">matches</span><span class="op">[</span><span class="number">3</span><span class="op">]</span><span class="op">,</span><br />
+<a class="lnum" href="#116" name="116">0116</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">floodcrest</span><span class="op">=</span><span class="name">matches</span><span class="op">[</span><span class="number">4</span><span class="op">]</span><span class="op">,</span><br />
+<a class="lnum" href="#117" name="117">0117</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">floodend</span><span class="op">=</span><span class="name">matches</span><span class="op">[</span><span class="number">5</span><span class="op">]</span><span class="op">,</span><br />
+<a class="lnum" href="#118" name="118">0118</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">recordstatus</span><span class="op">=</span><span class="name">matches</span><span class="op">[</span><span class="number">6</span><span class="op">]</span><span class="op">)</span><br />
+<a class="lnum" href="#119" name="119">0119</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">siteid</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">code</span><span class="op">.</span><span class="name">siteid</span><br />
+<a class="lnum" href="#120" name="120">0120</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">floodseverity</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">_interpret</span><span class="op">(</span><span class="string">"floodseverity"</span><span class="op">,</span>&#0160;<span class="name">matches</span><span class="op">[</span><span class="number">1</span><span class="op">]</span><span class="op">)</span><br />
+<a class="lnum" href="#121" name="121">0121</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">immediatecause</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">_interpret</span><span class="op">(</span><span class="string">"immediatecause"</span><span class="op">,</span>&#0160;<span class="name">matches</span><span class="op">[</span><span class="number">2</span><span class="op">]</span><span class="op">)</span><br />
+<a class="lnum" href="#122" name="122">0122</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">floodbegin</span>&#0160;<span class="op">=</span>&#0160;<span class="name">parsevtectime</span><span class="op">(</span><span class="name">matches</span><span class="op">[</span><span class="number">3</span><span class="op">]</span><span class="op">)</span><br />
+<a class="lnum" href="#123" name="123">0123</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">floodcrest</span>&#0160;<span class="op">=</span>&#0160;<span class="name">parsevtectime</span><span class="op">(</span><span class="name">matches</span><span class="op">[</span><span class="number">4</span><span class="op">]</span><span class="op">)</span><br />
+<a class="lnum" href="#124" name="124">0124</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">floodend</span>&#0160;<span class="op">=</span>&#0160;<span class="name">parsevtectime</span><span class="op">(</span><span class="name">matches</span><span class="op">[</span><span class="number">5</span><span class="op">]</span><span class="op">)</span><br />
+<a class="lnum" href="#125" name="125">0125</a>&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;&#0160;<span class="name">self</span><span class="op">.</span><span class="name">recordstatus</span>&#0160;<span class="op">=</span>&#0160;<span class="name">self</span><span class="op">.</span><span class="name">_interpret</span><span class="op">(</span><span class="string">"recordstatus"</span><span class="op">,</span>&#0160;<span class="name">matches</span><span class="op">[</span><span class="number">6</span><span class="op">]</span><span class="op">)</span></code></div></body></html>

@@ -1,0 +1,227 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+  
+  <HEAD><META CONTENT="text/html; charset=utf-8" HTTP-EQUIV="Content-Type">
+    <TITLE>nwscode.hvtec -- A parser for the &lt;em>Hydrologic Valid Time Event Code&lt;/em>.</TITLE>
+    <LINK HREF="layout.css" TYPE="text/css" REL="stylesheet">
+    
+  </HEAD>
+  <BODY>
+    <DIV ID="page">
+      
+    <DIV ID="top-nav">
+        <H1 ID="doc-title">
+        <A HREF="index.html" REL="index">nwscode</A></H1>
+        <DIV CLASS="online-navigation">
+          <A HREF="index.html" REL="index">index</A>
+          <SPAN ID="nav-docs">
+            
+          </SPAN>
+          
+          
+          <BR>
+          
+          
+          
+          <A HREF="module-nwscode.html" TITLE="nwscode reference">
+            nwscode
+          </A>
+          
+            
+            <A HREF="module-nwscode.hvtec.html">details</A>
+            
+            <A HREF="module-nwscode.hvtec-index.html">
+              tree
+            </A>
+            
+          
+        </DIV>
+    </DIV>
+    
+    <DIV ID="main-content">
+  
+  <H1 CLASS="pudge-member-page-heading">
+    <TT>hvtec</TT>
+  </H1>
+  <H4 CLASS="pudge-member-page-subheading">
+    A parser for the <EM>Hydrologic Valid Time Event Code</EM>.
+  </H4>
+  <P CLASS="pudge-member-parent-link">
+    <SMALL>
+    The hvtec module is accessible via the
+    <A HREF="module-nwscode.html">
+      <TT>nwscode</TT>
+    </A> module.
+    </SMALL>
+  </P>
+  <DIV ID="pudge-section-nav">
+  <UL>
+    <LI>
+      
+      <SPAN CLASS="pudge-missing-section-link">
+        Attributes
+      </SPAN>
+    </LI>
+    <LI>
+      
+      <SPAN CLASS="pudge-missing-section-link">
+        Functions
+      </SPAN>
+    </LI>
+    <LI>
+      <A HREF="#classes" CLASS="pudge-section-link">
+        Classes (2)
+      </A>
+      
+    </LI>
+      
+    <LI>
+      
+      <SPAN CLASS="pudge-missing-section-link">
+        Modules
+      </SPAN>
+    </LI>
+    <LI>
+      <A HREF="module-nwscode.hvtec-index.html" CLASS="pudge-section-link">
+        Index
+      </A>
+    </LI>
+    <LI>
+      <A HREF="nwscode/hvtec.py.html" CLASS="pudge-section-link">
+        Source
+      </A>
+    </LI>
+  </UL>
+  </DIV>
+  <DIV STYLE="clear: left">
+  </DIV>
+  <DIV CLASS="rst pudge-module-doc">
+    <P>Created by Alexander Ross on 2006-07-15.
+Copyright (c) 2006 NOAA's National Weather Service. All rights reserved.</P>
+  </DIV>
+  
+  <HR>
+  
+  
+  
+  
+    <A NAME="classes">
+  
+  
+    </A>
+    <H2>Classes</H2>
+    <DIV CLASS="pudge-member class ">
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">C</SPAN>
+      <TT>
+        <A HREF="class-nwscode.hvtec.HvtecError.html" CLASS="pudge-obj-link">HvtecError</A>(...)</TT>
+      <A HREF="nwscode/hvtec.py.html?f=29&amp;l=31#29" CLASS="pudge-member-view-source" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+      
+      <P CLASS="note">
+        This class contains <A HREF="class-nwscode.hvtec.HvtecError.html#members">
+          2 members</A>.
+      </P>
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member class ">
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">C</SPAN>
+      <TT>
+        <A HREF="class-nwscode.hvtec.Hvtec.html" CLASS="pudge-obj-link">Hvtec</A>(...)</TT>
+      <A HREF="nwscode/hvtec.py.html?f=32&amp;l=126#32" CLASS="pudge-member-view-source" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      A <EM>Hydrologic Valid Time Event Code</EM> Parser.
+    </P>
+    <P>Initialize this object with a H-VTEC string. For a full description
+of the H-VTEC format see:</P>
+<BLOCKQUOTE>
+<A HREF="http://www.weather.gov/directives/sym/pd01017003curr.pdf" CLASS="reference">http://www.weather.gov/directives/sym/pd01017003curr.pdf</A></BLOCKQUOTE>
+<P>Attributes:</P>
+<BLOCKQUOTE>
+<DL CLASS="docutils">
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">siteid</SPAN></TT></DT>
+<DD>Five character NWS Site Identifier.  For areal flood, flash flood,
+and flood advisory products, encoded as five zeros (00000).</DD>
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">floodseverity</SPAN></TT></DT>
+<DD>Identifies the severity of the flooding on rivers and streams
+where point-specific flood warning products are issued.</DD>
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">immediatecause</SPAN></TT></DT>
+<DD>Identifies the immediate cause of the flood.</DD>
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">floodbegin</SPAN></TT></DT>
+<DD>Represents the actual beginning time of the flooding.</DD>
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">floodcrest</SPAN></TT></DT>
+<DD>Represents the actual crest time of the flooding.</DD>
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">floodend</SPAN></TT></DT>
+<DD>Represents the actual end time of the flooding.</DD>
+<DT>
+<TT CLASS="docutils literal">
+<SPAN CLASS="pre">recordstatus</SPAN></TT></DT>
+<DD>Identifies how the flood compares to the flood of record.</DD>
+</DL>
+</BLOCKQUOTE>
+<P>Usage Example:</P>
+<PRE CLASS="doctest-block">
+>>> from nwscode.hvtec import HVTEC
+>>> hvtec_string = '/DEMI4.1.ER.030509T2100Z.030510T0300Z.030510T0900Z.NO/'
+>>> hv = HVTEC(hvtec_string)
+>>> hv.floodseverity
+'Minor'
+>>> pv.immediatecause
+'Excessive Rainfall'
+>>>
+</PRE>
+  
+      
+      <P CLASS="note">
+        This class contains <A HREF="class-nwscode.hvtec.Hvtec.html#members">
+          4 members</A>.
+      </P>
+    </DIV>
+  </DIV>
+    
+  
+  
+  <P>
+    <SMALL>
+    
+    
+    See 
+    <A HREF="nwscode/hvtec.py.html" TITLE="nwscode/hvtec.py:0">the source</A>
+    for more information.
+    </SMALL>
+  </P>
+</DIV>
+    
+    <DIV ID="footer">
+      
+      <P ID="pudge">
+        Built with
+        <A HREF="http://lesscode.org/projects/pudge/">
+          Pudge/0.1.1</A>
+      </P>
+      
+    </DIV>
+    </DIV>
+  </BODY>
+</HTML>

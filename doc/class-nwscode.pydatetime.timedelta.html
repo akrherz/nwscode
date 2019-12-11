@@ -1,0 +1,529 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+  
+  <HEAD><META CONTENT="text/html; charset=utf-8" HTTP-EQUIV="Content-Type">
+    <TITLE>nwscode.pydatetime.timedelta -- Represent the difference between two datetime objects.</TITLE>
+    <LINK HREF="layout.css" TYPE="text/css" REL="stylesheet">
+    
+  </HEAD>
+  <BODY>
+    <DIV ID="page">
+      
+    <DIV ID="top-nav">
+        <H1 ID="doc-title">
+        <A HREF="index.html" REL="index">nwscode</A></H1>
+        <DIV CLASS="online-navigation">
+          <A HREF="index.html" REL="index">index</A>
+          <SPAN ID="nav-docs">
+            
+          </SPAN>
+          
+          
+          <BR>
+          
+          
+          
+          <A HREF="module-nwscode.html" TITLE="nwscode reference">
+            nwscode
+          </A>
+          
+            
+            <A HREF="class-nwscode.pydatetime.timedelta.html">details</A>
+            
+            <A HREF="class-nwscode.pydatetime.timedelta-index.html">
+              tree
+            </A>
+            
+          
+        </DIV>
+    </DIV>
+    
+    <DIV ID="main-content">
+  
+  <H1 CLASS="pudge-member-page-heading">
+    <TT>timedelta</TT>
+  </H1>
+  <H4 CLASS="pudge-member-page-subheading">
+    Represent the difference between two datetime objects.
+  </H4>
+  <P CLASS="pudge-member-parent-link">
+    <SMALL>
+    The timedelta class is accessible via the
+    <A HREF="module-nwscode.pydatetime.html">
+      <TT>nwscode.pydatetime</TT>
+    </A> module.
+    </SMALL>
+  </P>
+  <DIV ID="pudge-section-nav">
+  <UL>
+    <LI>
+      <A HREF="#attributes" CLASS="pudge-section-link">
+        Attributes (7)
+      </A>
+      
+    </LI>
+      
+    <LI>
+      <A HREF="#methods" CLASS="pudge-section-link">
+        Methods (19)
+      </A>
+      
+    </LI>
+    
+    <LI>
+      <A HREF="nwscode/pydatetime.py.html?f=417&amp;l=694#417" CLASS="pudge-section-link">
+        Source
+      </A>
+    </LI>
+  </UL>
+  </DIV>
+  <DIV STYLE="clear: left">
+  </DIV>
+  <DIV CLASS="rst pudge-module-doc">
+    <P>Supported operators:</P>
+<UL CLASS="simple">
+<LI>add, subtract timedelta</LI>
+<LI>unary plus, minus, abs</LI>
+<LI>compare to timedelta</LI>
+<LI>multiply, divide by int/long</LI>
+</UL>
+<P>In addition, datetime supports subtraction of two datetime objects
+returning a timedelta, and addition or subtraction of a datetime
+and a timedelta giving a datetime.</P>
+<P>Representation: (days, seconds, microseconds).  Why?  Because I
+felt like it.</P>
+  </DIV>
+  
+  <HR>
+  
+  
+  
+  
+    <A NAME="attributes">
+  
+  
+    </A>
+    <H2>Attributes</H2>
+    <DIV CLASS="pudge-member name">
+    <A NAME="min">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">a</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#min" CLASS="pudge-obj-link">min</A></TT></H4>
+    <DIV CLASS="pudge-section rst">
+      
+      <PRE>datetime.timedelta(-999999999)</PRE>
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member name">
+    <A NAME="seconds">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">a</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#seconds" CLASS="pudge-obj-link">seconds</A></TT></H4>
+    <DIV CLASS="pudge-section rst">
+      <P>seconds</P>
+      
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member name">
+    <A NAME="max">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">a</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#max" CLASS="pudge-obj-link">max</A></TT></H4>
+    <DIV CLASS="pudge-section rst">
+      
+      <PRE>datetime.timedelta(999999999, 86399, 999999)</PRE>
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member name">
+    <A NAME="microseconds">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">a</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#microseconds" CLASS="pudge-obj-link">microseconds</A></TT></H4>
+    <DIV CLASS="pudge-section rst">
+      <P>microseconds</P>
+      
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member name">
+    <A NAME="days">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">a</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#days" CLASS="pudge-obj-link">days</A></TT></H4>
+    <DIV CLASS="pudge-section rst">
+      <P>days</P>
+      
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member name">
+    <A NAME="__safe_for_unpickling__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">a</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__safe_for_unpickling__" CLASS="pudge-obj-link">__safe_for_unpickling__</A></TT></H4>
+    <DIV CLASS="pudge-section rst">
+      
+      <PRE>True</PRE>
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member name">
+    <A NAME="resolution">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">a</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#resolution" CLASS="pudge-obj-link">resolution</A></TT></H4>
+    <DIV CLASS="pudge-section rst">
+      
+      <PRE>datetime.timedelta(0, 0, 1)</PRE>
+    </DIV>
+  </DIV>
+    
+  
+    <A NAME="methods">
+    
+  
+    </A>
+    <H2>Methods</H2>
+    <DIV CLASS="pudge-member routine alias">
+    <A NAME="__init__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__init__" CLASS="pudge-obj-link">__init__</A>(...)</TT>
+      <A HREF="__builtin__.py.html" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    <P CLASS="pudge-member-blurb">
+      x.__init__(...) initializes x; see x.__class__.__doc__ for signature
+    </P>
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__radd__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__radd__" CLASS="pudge-obj-link">__radd__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=578&amp;l=586#578" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__add__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__add__" CLASS="pudge-obj-link">__add__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=578&amp;l=586#578" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__sub__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__sub__" CLASS="pudge-obj-link">__sub__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=589&amp;l=593#589" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__rsub__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__rsub__" CLASS="pudge-obj-link">__rsub__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=594&amp;l=598#594" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__neg__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__neg__" CLASS="pudge-obj-link">__neg__</A>(self)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=599&amp;l=605#599" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__pos__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__pos__" CLASS="pudge-obj-link">__pos__</A>(self)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=606&amp;l=608#606" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__abs__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__abs__" CLASS="pudge-obj-link">__abs__</A>(self)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=609&amp;l=614#609" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__rmul__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__rmul__" CLASS="pudge-obj-link">__rmul__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=615&amp;l=623#615" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__mul__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__mul__" CLASS="pudge-obj-link">__mul__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=615&amp;l=623#615" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__div__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__div__" CLASS="pudge-obj-link">__div__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=626&amp;l=632#626" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__floordiv__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__floordiv__" CLASS="pudge-obj-link">__floordiv__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=626&amp;l=632#626" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__eq__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__eq__" CLASS="pudge-obj-link">__eq__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=637&amp;l=642#637" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__ne__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__ne__" CLASS="pudge-obj-link">__ne__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=643&amp;l=648#643" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__le__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__le__" CLASS="pudge-obj-link">__le__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=649&amp;l=654#649" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__lt__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__lt__" CLASS="pudge-obj-link">__lt__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=655&amp;l=660#655" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__ge__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__ge__" CLASS="pudge-obj-link">__ge__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=661&amp;l=666#661" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__gt__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__gt__" CLASS="pudge-obj-link">__gt__</A>(self, other)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=667&amp;l=672#667" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+  <DIV CLASS="pudge-member routine ">
+    <A NAME="__nonzero__">
+    </A>
+    <H4 CLASS="pudge-member-name">
+    <SPAN CLASS="prefix">f</SPAN>
+      <TT>
+      <A HREF="class-nwscode.pydatetime.timedelta.html#__nonzero__" CLASS="pudge-obj-link">__nonzero__</A>(self)</TT>
+      <A HREF="nwscode/pydatetime.py.html?f=680&amp;l=684#680" TITLE="View Source">...</A>
+    </H4>
+    <DIV CLASS="pudge-section rst">
+      
+    
+    
+  
+    </DIV>
+  </DIV>
+    
+  
+  
+  <P>
+    <SMALL>
+    
+    
+    See 
+    <A HREF="nwscode/pydatetime.py.html?f=417&amp;l=694#417" TITLE="nwscode/pydatetime.py:417">the source</A>
+    for more information.
+    </SMALL>
+  </P>
+</DIV>
+    
+    <DIV ID="footer">
+      
+      <P ID="pudge">
+        Built with
+        <A HREF="http://lesscode.org/projects/pudge/">
+          Pudge/0.1.1</A>
+      </P>
+      
+    </DIV>
+    </DIV>
+  </BODY>
+</HTML>
